@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+
+
 struct Address {
   std::string street;
   int zip;
@@ -17,25 +19,55 @@ struct Person {
   Address location;
 };
 
+std::ostream &operator<<(std::ostream &os, Person &date);
+
 std::vector<Person> read_file(std::string filename);
 size_t find_in_names(std::vector<Person> persons, std::string name_part);
 std::vector<Person> find_person_from_city(std::vector<Person> haystack,
                                           std::string city);
 std::istream &operator>>(std::istream &in, Person &p);
 
-size_t find_in_names(std::vector<Person> persons, std::string name_part) {
+/*size_t find_in_names(std::vector<Person> persons, std::string name_part) {
   int my_count;
   my_count =
       std::count_if(persons.begin(), persons.end(), [&](const Person &s) {
         return !s.name.find(name_part);
       });
-  std::cout << "Name: " << name_part << "\tcount: " << my_count << std::endl;
+  std::cout << "Namn: " << name_part << "\nantal: " << my_count << std::endl;
+  return 0;
+}*/
+
+size_t find_in_names(std::vector<Person> persons, std::string name_part) {
+  int count = 0;
+  transform(name_part.begin(), name_part.end(), name_part.begin(), ::tolower);
+  for (Person c: persons){
+    std::string str = c.name;
+    transform(str.begin(), str.end(), str.begin(), ::tolower);
+    if (str.find(name_part) != std::string::npos){
+      count++;
+    }
+  }
+  std::cout << count << "\n";
   return 0;
 }
 
 std::vector<Person> find_person_from_city(std::vector<Person> haystack,
                                           std::string city) {
-  return haystack;
+  transform(city.begin(), city.end(), city.begin(), ::tolower);
+  std::vector<Person> vec;
+  for (Person c: haystack){
+    std::string str = c.location.city;
+    transform(str.begin(), str.end(), str.begin(), ::tolower);
+    if (str == city){
+      vec.push_back(c);
+    }
+  }
+/*
+ * for (Person c : vec) {
+ * std::cout << c << '\n';
+ * }
+ */
+  return vec;
 }
 
 std::string rtrim(const std::string &s) {
@@ -87,10 +119,39 @@ std::ostream &operator<<(std::ostream &os, Person &date) {
 int main() {
   std::vector<Person> vec;
   vec = read_file("names.txt");
-  for (Person c : vec) {
+  /*for (Person c : vec) {
     std::cout << c << '\n';
+  }*/
+  int mode = 0;
+  std::cout << "1 - Sök del av personnamn.\n"
+               "2 - Sök städer.\n"
+               "3 - Avsluta.\n";
+  while (mode < 1 || mode > 3) {
+    std::cin >> mode;
+    switch (mode) {
+    case 1: {
+      std::string str;
+      std::cout << "Vilket namn vill du söka efter? ";
+      std::cin >> str;
+      find_in_names(vec, str);
+      break;
+    }
+    case 2: {
+      std::string str;
+      std::cout << "Vilket stad vill du söka efter? ";
+      std::cin >> str;
+      find_in_names(vec, str);
+      find_person_from_city(vec, str);
+      break;
+    }
+    case 3: std::cout << "Avslutar";
+      break;
+    default: printf("Vänligen ange ett tal mellan 1 och 3 för att välja alternativ.\n");
+    }
+    std::cin.clear();
+    std::cin.ignore();
   }
-  find_in_names(vec, "Johan");
-  find_person_from_city(vec, "test");
+
+
   return 0;
 }
