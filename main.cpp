@@ -19,29 +19,29 @@ struct Person {
 
 std::vector<Person> read_file(std::string filename);
 size_t find_in_names(std::vector<Person> persons, std::string name_part);
-std::vector<Person> find_person_from_city(std::vector<Person> haystack, std::string city);
+std::vector<Person> find_person_from_city(std::vector<Person> haystack,
+                                          std::string city);
 std::istream &operator>>(std::istream &in, Person &p);
 
 size_t find_in_names(std::vector<Person> persons, std::string name_part) {
-  int i;
-  while (i < persons.size()){
-    std::vector<Person>::iterator it = std::find_if (persons.begin(), persons.end(), name_part);
-    std::cout << *it << '\n';
-  }
+  int my_count;
+  my_count =
+      std::count_if(persons.begin(), persons.end(), [&](const Person &s) {
+        return !s.name.find(name_part);
+      });
+  std::cout << "Name: " << name_part << "\tcount: " << my_count << std::endl;
   return 0;
 }
 
-std::vector<Person> find_person_from_city(std::vector<Person> haystack, std::string city) {
-  std::vector<Person> vec;
-  return vec;
+std::vector<Person> find_person_from_city(std::vector<Person> haystack,
+                                          std::string city) {
+  return haystack;
 }
 
-std::string rtrim(const std::string& s)
-{
+std::string rtrim(const std::string &s) {
   size_t end = s.find_last_not_of(' ');
   return (end == std::string::npos) ? "" : s.substr(0, end + 1);
 }
-
 
 std::istream &operator>>(std::istream &in, Person &p) {
   std::string temp, temp2;
@@ -63,8 +63,8 @@ std::istream &operator>>(std::istream &in, Person &p) {
 std::vector<Person> read_file(const std::string filename) {
   std::vector<Person> vec;
   std::ifstream names(filename);
-  if (names.fail()){
-    std::cout << "fail to open file\n";
+  if (names.fail()) {
+    std::cout << "Fail to open file\n";
     return vec;
   }
   Person temp;
@@ -76,11 +76,11 @@ std::vector<Person> read_file(const std::string filename) {
 }
 
 std::ostream &operator<<(std::ostream &os, Person &date) {
-  os << date.name << "\n";
-  os << date.id << "\n";
-  os << date.location.city << "\n";
-  os << date.location.street << "\n";
-  os << date.location.zip << "\n";
+  os << date.name << '\n';
+  os << date.id << '\n';
+  os << date.location.city << '\n';
+  os << date.location.street << '\n';
+  os << date.location.zip << '\n';
   return os;
 }
 
@@ -88,7 +88,9 @@ int main() {
   std::vector<Person> vec;
   vec = read_file("names.txt");
   for (Person c : vec) {
-    std::cout << c << "\n";
+    std::cout << c << '\n';
   }
+  find_in_names(vec, "Johan");
+  find_person_from_city(vec, "test");
   return 0;
 }
