@@ -63,7 +63,7 @@ std::vector<Person> find_person_from_city(std::vector<Person> haystack,
     }
   }
   for (Person c : vec) {
-    std::cout << c << '\n';
+    std::cout << c.name << " " << c.location.city << '\n';
   }
   return vec;
 }
@@ -105,19 +105,19 @@ std::vector<Person> read_file(const std::string filename) {
   return vec;
 }
 
-/*std::ostream &operator<<(std::ostream &os, Person &date) {
+std::ostream &operator<<(std::ostream &os, Person &date) {
   os << date.name << '\n';
   os << date.id << '\n';
   os << date.location.city << '\n';
   os << date.location.street << '\n';
   os << date.location.zip << '\n';
   return os;
-}*/
+}
 
-std::ostream &operator<<(std::ostream &os, Person &date) {
+/*std::ostream &operator<<(std::ostream &os, Person &date) {
   os << date.name << " " << date.location.city << '\n';
   return os;
-}
+}*/
 
 int main() {
   std::vector<Person> vec;
