@@ -26,21 +26,8 @@ struct Person {
   Address location;
 };
 
-/*size_t find_in_names(std::vector<Person> persons, std::string name_part) {
-  int my_count;
-  transform(name_part.begin(), name_part.end(), name_part.begin(), ::tolower);
-  my_count =
-      std::count_if(persons.begin(), persons.end(), [&](const Person &s) {
-      std::string str = s.name;
-      transform(str.begin(), str.end(), str.begin(), ::tolower);
-        return !str.find(name_part);
-      });
-  std::cout << "Namn: " << name_part << "\nantal: " << my_count << std::endl;
-  return 0;
-}*/
-
 size_t find_in_names(const std::vector<Person>& persons, const std::string& name_part) {
-  int count = 0;
+  size_t count = 0;
   for (const Person& c : persons) {
     if (caseInsensitive(c.name).find(caseInsensitive(name_part)) != std::string::npos) {
       count++;
@@ -104,50 +91,49 @@ std::istream &operator>>(std::istream &in, Person &p) {
   p.location.city = rtrim(temp.substr(y + 2, -1));
   return in;
 }
-
 std::string caseInsensitive(std::string str){
-  std::string s = str;
-  transform(s.begin(), s.end(), s.begin(), ::towupper);
-  return s;
+  transform(str.begin(), str.end(), str.begin(), ::toupper);
+  return str;
 }
-
-/*std::ostream &operator<<(std::ostream &os, Person &date) {
-  os << date.name << " " << date.location.city << '\n';
-  return os;
-}*/
 
 int main() {
   std::vector<Person> vec;
-  vec = read_file("names2.txt");
-  /*for (Person c : vec) {
-    std::cout << c << '\n';
-  }*/
+  vec = read_file("names.txt");
   int mode = 0;
   while (mode < 1 || mode > 3) {
     std::cout << "\n1 - Sök del av personnamn.\n"
                  "2 - Sök städer.\n"
+
                  "3 - Avsluta.\n";
     std::cin >> mode;
     switch (mode) {
     case 1: {
+      std::cin.clear();
+      std::cin.ignore();
       std::string str;
       std::cout << "Vilket namn vill du söka efter? ";
-      std::cin >> str;
+      std::getline(std::cin, str);
       std::cout << find_in_names(vec, str);
       mode = 0;
       continue;
     }
     case 2: {
+      std::cin.clear();
+      std::cin.ignore();
       std::string str;
       std::cout << "Vilket stad vill du söka efter? ";
-      std::cin >> str;
-      for (const Person& c : find_person_from_city(vec, str)) {
+      std::getline(std::cin, str);
+      std::vector<Person> vec2;
+      vec2 = find_person_from_city(vec, str);
+      for (const Person &c : vec2) {
         std::cout << c.name << " " << c.location.city << '\n';
       }
       mode = 0;
       continue;
     }
     case 3:
+      std::cin.clear();
+      std::cin.ignore();
       std::cout << "Avslutar";
       break;
     default:
@@ -158,9 +144,3 @@ int main() {
   }
   return 0;
 }
-//Questions, Why size_t on find_in_name why not int?
-//Why does inputing 1x, 2x or similar fuck with the menu system?
-/*
-searching for råda does not yeild RÅDA, but searching for skruv yields SKRUV.
-problem with åäö?
-*/
